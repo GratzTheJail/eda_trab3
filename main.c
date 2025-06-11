@@ -1,6 +1,6 @@
 #include <stdio.h>
 
 int main(){
-	printf("Tenha um bom dia!\n");
+	printf("Tenha um mau dia :(!\n");
 	return 0;
 }
