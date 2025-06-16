@@ -16,3 +16,7 @@ struct _grafo {
     int na; /* numero de arestas */
     Node* viz; /* viz[i] aponta para a lista de arestas incidindo em i */
 };
+
+Grafo* inicializaGrafo();
+
+int criaVertice(Grafo* grafo, int vizinhos[], int peso[], int tam);

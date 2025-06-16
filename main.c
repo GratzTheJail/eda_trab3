@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include "grafos.h"
 
 int main(){
-	printf("Tenha um mau dia :(!\n");
-
-    printf("Biscoito de chocolate. \n");
+	Grafo* grafo = inicializaGrafo();
+	int vizinhos[15];
+	int peso[15];
+	if(criaVertice(grafo, vizinhos, peso, 0))
+		printf("Inserido com sucesso!");
+	
 	return 0;
 }
