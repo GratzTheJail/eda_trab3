@@ -11,6 +11,7 @@ Grafo* inicializaGrafo(){
         exit(1);
     grafo->viz = NULL;
     grafo->nv = 0;
+    grafo->na = 0;
     return grafo;
 }
 
@@ -37,31 +38,35 @@ int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
 
     // para cada vértice dado na entrada (vizinhos) adicionar este vértice e seu peso à lista dos vizinhos
     for(int i = 0; i < tam; i++){
-        // cria vizinho com peso efetivamente
-        Viz* viz = (Viz*)malloc(sizeof(Viz));
-        if(viz == NULL) exit(1);
-        viz->peso = peso[i];
-        viz->n = vizinhos[i];
-        
-        // insere novo elemento à lista
-        vAtual->obj = (void*)postInsert(vAtual->obj, countNodes(vAtual->obj));
-        Node* novoViz = findNode(vAtual->obj, countNodes(vAtual->obj) - 1);
-        novoViz->obj = (void*)viz; // faz novo elemento apontar para o vizinho criado
+        if(vizinhos[i] <= countNodes(grafo->viz)){
+            grafo->na++;
+
+            // cria vizinho com peso efetivamente
+            Viz* viz = (Viz*)malloc(sizeof(Viz));
+            if(viz == NULL) exit(1);
+            viz->peso = peso[i];
+            viz->n = vizinhos[i];
+            
+            // insere novo elemento à lista
+            vAtual->obj = (void*)postInsert(vAtual->obj, countNodes(vAtual->obj));
+            Node* novoViz = findNode(vAtual->obj, countNodes(vAtual->obj) - 1);
+            novoViz->obj = (void*)viz; // faz novo elemento apontar para o vizinho criado
 
 
-        
-        // para cada vizinho, adicionar na lista de arestas deste vizinho o novo vertice (vAtual)
-        
-        // cria a aresta para o vizinho respectivo com peso correto
-        Viz* atual = (Viz*)malloc(sizeof(Viz));
-        if(atual == NULL) exit(1);
-        atual->peso = peso[i];
-        atual->n = grafo->nv;
+            
+            // para cada vizinho, adicionar na lista de arestas deste vizinho o novo vertice (vAtual)
+            
+            // cria a aresta para o vizinho respectivo com peso correto
+            Viz* atual = (Viz*)malloc(sizeof(Viz));
+            if(atual == NULL) exit(1);
+            atual->peso = peso[i];
+            atual->n = grafo->nv;
 
-        // insere no na lista de arestas do vizinho
-        novoViz = findNode(grafo->viz, vizinhos[i]);
-        novoViz->obj = (void*)postInsert(novoViz->obj, countNodes(novoViz->obj));
-        findNode(novoViz->obj, countNodes(novoViz->obj) - 1)->obj = (void*)atual; // faz nova aresta apontar para o vertice criado
+            // insere no na lista de arestas do vizinho
+            novoViz = findNode(grafo->viz, vizinhos[i]);
+            novoViz->obj = (void*)postInsert(novoViz->obj, countNodes(novoViz->obj));
+            findNode(novoViz->obj, countNodes(novoViz->obj) - 1)->obj = (void*)atual; // faz nova aresta apontar para o vertice criado
+        }
     }
 
     return 1;

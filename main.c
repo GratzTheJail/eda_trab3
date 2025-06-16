@@ -5,8 +5,7 @@ int main(){
 	Grafo* grafo = inicializaGrafo();
 	int vizinhos[15];
 	float peso[15];
-	if(criaVertice(grafo, vizinhos, peso, 0))
-		printf("Inserido com sucesso!");
+	criaVertice(grafo, vizinhos, peso, 0);
 	
 	vizinhos[0] = 1;
 	peso[0] = 8.0f;
@@ -20,10 +19,11 @@ int main(){
 
 	criaVertice(grafo, vizinhos, peso,0);
 
-	vizinhos[0] = 1;
+	vizinhos[0] = 55;
 	peso[0] = 4.4f;
 	criaVertice(grafo, vizinhos, peso, 1);
 
 	imprimirGrafo(grafo);
+	printf("Vertices: %d | Arestas: %d\n", grafo->nv, grafo->na);
 	return 0;
 }
