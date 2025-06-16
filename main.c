@@ -1,3 +1,10 @@
+/*
+Guilherme Melo Gratz - 2211068 - 3WA
+Vinicius Lucena - ... - 3WA
+
+MODULO PRINCIPAL: TESTES
+*/
+
 #include <stdio.h>
 #include "grafos.h"
 
@@ -27,3 +34,12 @@ int main(){
 	printf("Vertices: %d | Arestas: %d\n", grafo->nv, grafo->na);
 	return 0;
 }
+
+/*
+COMPILAÇÃO
+Linux Fedora 42 
+gcc 15.1.1
+
+comando:
+gcc -Wall -o prog main.c grafos.c list/list.c
+*/

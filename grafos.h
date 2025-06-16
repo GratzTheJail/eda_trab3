@@ -1,3 +1,10 @@
+/*
+Guilherme Melo Gratz - 2211068 - 3WA
+Vinicius Lucena - ... - 3WA
+
+MODULO GRAFOS
+*/
+
 #ifndef LIST
 #define LIST
 #include "list/list.h"

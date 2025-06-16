@@ -1,4 +1,9 @@
-//TESTE
+/*
+Guilherme Melo Gratz - 2211068 - 3WA
+Vinicius Lucena - ... - 3WA
+
+MODULO GRAFOS
+*/
 #ifndef GRAFOS
 #define GRAFOS
 #include "grafos.h"
