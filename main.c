@@ -7,6 +7,5 @@ int main(){
 	int peso[15];
 	if(criaVertice(grafo, vizinhos, peso, 0))
 		printf("Inserido com sucesso!");
-	
 	return 0;
 }
