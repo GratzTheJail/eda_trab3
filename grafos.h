@@ -19,4 +19,6 @@ struct _grafo {
 
 Grafo* inicializaGrafo();
 
-int criaVertice(Grafo* grafo, int vizinhos[], int peso[], int tam);
+int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam);
+
+void imprimirGrafo(Grafo* grafo);

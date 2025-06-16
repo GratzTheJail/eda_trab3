@@ -13,7 +13,7 @@ Grafo* inicializaGrafo(){
     return grafo;
 }
 
-int criaVertice(Grafo* grafo, int vizinhos[], int peso[], int tam){
+int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
     grafo->nv++;
     grafo->viz = postInsert(grafo->viz, grafo->nv);
     Node* vAtual = findNode(grafo->viz, grafo->nv);
@@ -29,8 +29,12 @@ int criaVertice(Grafo* grafo, int vizinhos[], int peso[], int tam){
 
         viz->peso = peso[i];
         viz->n = vizinhos[i];
-
+        
         vAtual->obj = (void*)postInsert(vAtual->obj, countNodes(vAtual->obj));
+        Node* novoViz = findNode(vAtual->obj, countNodes(vAtual->obj) - 1);
+        novoViz->obj = (void*)viz;
+
+        // TODO: para cada vizinho, adicionar nas arestas deste vizinho o novo vertice
     }
 
     return 1;

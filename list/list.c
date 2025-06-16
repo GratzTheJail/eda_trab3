@@ -75,6 +75,7 @@ Node *deleteList(Node *top) {
 	}
 	else
 		return NULL;
+	return NULL;
 }
 
 void printList(Node *top) {
