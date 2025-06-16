@@ -34,4 +34,17 @@ int criaVertice(Grafo* grafo, int vizinhos[], int peso[], int tam){
     }
 
     return 1;
-}   
+}
+
+// Função para imprimir o grafo
+void imprimirGrafo(Grafo* grafo) {
+    for (int v = 0; v < grafo->numVertices; v++) {
+        No* temp = grafo->listaAdj[v];
+        printf("Vértice %d:", v);
+        while (temp) {
+            printf(" -> %d", temp->vertice);
+            temp = temp->proximo;
+        }
+        printf("\n");
+    }
+}
