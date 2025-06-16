@@ -34,24 +34,4 @@ int criaVertice(Grafo* grafo, int vizinhos[], int peso[], int tam){
     }
 
     return 1;
-}
-
-void imprimirGrafo(Grafo* grafo) {
-    Node* vertice = grafo->viz;
-
-    while (vertice != NULL) {
-        printf("Vértice %d:", vertice->id);
-
-        Node* vizinhos = (Node*)vertice->obj;
-
-        while (vizinhos != NULL) {
-            Viz* v = (Viz*)vizinhos->obj;
-            if (v != NULL)
-                printf(" -> %d (peso %.1f)", v->n, v->peso);
-            vizinhos = vizinhos->next;
-        }
-
-        printf("\n");
-        vertice = vertice->next;
-    }
-}
+}   
