@@ -24,6 +24,21 @@ struct _grafo {
     Node* viz; /* viz[i] aponta para a lista de arestas incidindo em i */
 };
 
+typedef struct aresta Aresta;
+struct aresta {
+    int u, v;
+    float peso;
+};
+
+typedef struct unionfind UnionFind;
+struct unionfind
+{
+    int* pai;
+    int* rank;
+    int tam;   
+};
+
+
 Grafo* inicializaGrafo();
 
 // cria um vertice na ultima posição da lista de vertices do grafo
@@ -40,3 +55,15 @@ void deletaGrafo(Grafo* grafo);
 void dfs(Grafo* grafo, int verticeInicial);
 
 void bfs(Grafo* grafo, int verticeInicial);
+
+UnionFind* criarUnionFind(int n);
+
+int find(UnionFind* uf, int x);
+
+void unite(UnionFind* uf, int x, int y);
+
+Aresta* extrairArestas(Grafo* grafo, int* qtdArestas);
+
+int compararArestas(void* a, void* b);
+
+void kruskal(Grafo* grafo);

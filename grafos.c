@@ -175,3 +175,129 @@ void bfs(Grafo* grafo, int verticeInicial){
         }
     }
 }
+
+// cria um Union-Find com n elementos
+UnionFind* criarUnionFind(int n){ 
+    UnionFind* uf = (UnionFind*)malloc(sizeof(UnionFind));
+    if(uf == NULL) exit(1);
+    uf->tam = n;
+    // aloca espaço para os arrays pai e rank
+    uf->pai = (int*)malloc(n * sizeof(int));
+    uf->rank = (int*)malloc(n * sizeof(int));
+    if(uf->pai == NULL || uf->rank == NULL) exit(1);
+    
+    for (int i = 1; i <= n; i++)
+    {
+        uf->pai[i] = i; //cada vertice é seu próprio pai inicialmente
+        uf->rank[i] = 0; //rank inicial é 0
+    }
+    return uf; //retorna o UnionFind criado
+}
+
+//encontra o pai do vertice x
+int find(UnionFind* uf, int x) { 
+    if (uf->pai[x] != x)
+    {
+        uf->pai[x] = find(uf, uf->pai[x]); //caminho comprimido
+    }
+    return uf->pai[x]; //retorna o pai do vertice x
+}
+
+//une dois conjuntos
+void unite(UnionFind* uf, int x, int y){
+    int rx = find(uf, x); //encontra o pai do vertice x
+    int ry = find(uf, y); //encontra o pai do vertice y
+
+    if (rx == ry) return; //se os pais forem iguais, ja estao unidos
+    
+    if (uf->rank[rx] > uf->rank[ry])
+    {
+        uf->pai[ry] = rx; //une o conjunto de y ao conjunto de x
+    }
+    else
+    {
+        uf->pai[rx] = ry; //une o conjunto de x ao conjunto de y
+        if (uf->rank[rx] == uf->rank[ry])
+        {
+            uf->rank[ry]++; //incrementa o rank se os ranks forem iguais
+        }
+    }
+}
+
+//por ser um grafo nao direcionado, precisa remover duplicatas
+Aresta* extrairArestas(Grafo* grafo, int* qtdArestas){
+    Node* vertice = grafo->viz;
+    int maxArestas = grafo->na;
+
+    Aresta* arestas = (Aresta*)malloc(maxArestas * sizeof(Aresta));
+    *qtdArestas = 0;
+
+    while (vertice != NULL)
+    {
+        int u = vertice->n;
+        Node* listaVizinhos = (Node*)vertice->obj;
+
+        while (listaVizinhos != NULL)
+        {
+            Viz* vizinho = (Viz*)listaVizinhos->obj;
+            int v = vizinho->n;
+            float peso = vizinho->peso;
+
+            // evita adicionar arestas iguais na lista de arestas
+            if (u < v)
+            {
+                arestas[*qtdArestas].u = u;
+                arestas[*qtdArestas].v = v;
+                arestas[*qtdArestas].peso = peso;
+                (*qtdArestas)++;
+            }
+            listaVizinhos = listaVizinhos->next; // passa para o proximo vizinho
+        }
+        vertice = vertice->next; // passa para o proximo vertice
+    }
+    
+    return arestas; //retorna o array de arestas
+}
+
+int compararArestas(void* a, void* b){
+    Aresta* arestaA = (Aresta*)a;
+    Aresta* arestaB = (Aresta*)b;
+    if (arestaA->peso < arestaB->peso)
+        return -1;
+    if (arestaA->peso > arestaB->peso)
+        return 1;
+    return 0; // se os pesos forem iguais, retorna 0
+}
+
+void kruskal(Grafo* grafo){
+    int qtdArestas;
+    Aresta* arestas = extrairTodasArestas(grafo, &qtdArestas);
+
+    // ordena as arestas pelo peso
+    qsort(arestas, qtdArestas, sizeof(Aresta), compararArestas);
+
+    UnionFind* uf = criarUnionFind(grafo->nv); //numero total de vertices
+
+    printf("Arestas do MST:\n");
+    float custoTotal = 0;
+
+    for (int i = 0; i < qtdArestas && grafo->na < grafo->nv - 1; i++)
+    {
+        Aresta a = arestas[i];
+        int u = a.u;
+        int v = a.v;
+        float peso = a.peso;
+
+        if (find(uf, u) != find(uf, v))
+        {
+            printf("Aresta: %d - %d, Peso: %.2f\n", u, v, peso);
+            custoTotal += peso;
+            unite(uf, u, v);
+        }
+    }
+    printf("Custo total da AGM: %.2f\n", custoTotal);
+    free(arestas); // libera a memoria alocada para as arestas
+    free(uf->pai); // libera a memoria alocada para o array pai
+    free(uf->rank); // libera a memoria alocada para o array rank
+    free(uf); // libera a memoria alocada para o UnionFind
+}
