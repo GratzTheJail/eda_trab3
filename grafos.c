@@ -81,25 +81,25 @@ int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
 
 // imprime cada vértice e seus vizinhos (com pesos)
 void imprimirGrafo(Grafo* grafo) {
-    Node* vertice = grafo->viz;
+    // percorre lista de vertices do grafo
+    for(Node* v = grafo->viz; v != NULL; v = v->next) {
+        printf("Vértice %d:", v->n);
 
-    while (vertice != NULL) {
-        printf("Vértice %d:", vertice->n);
-
-        Node* vizinhos = (Node*)vertice->obj;
-
-        while (vizinhos != NULL) {
-            Viz* v = (Viz*)vizinhos->obj;
-            if (v != NULL)
-                printf(" -> %d (peso %.1f)", v->n, v->peso);
-            vizinhos = vizinhos->next;
+        // percorre lista de arestas do grafo
+        for(Node* vizs = (Node*)v->obj; vizs != NULL; vizs = vizs->next) {
+            Viz* viz = (Viz*)vizs->obj;
+            
+            // imprime cada vizinho (aresta)
+            if (viz != NULL)
+                printf(" -> %d (peso %.1f)", viz->n, viz->peso);
         }
 
         printf("\n");
-        vertice = vertice->next;
     }
 }
 
+// TODO
+void deletaGrafo(Grafo* grafo);
 
 void dfs(Grafo* grafo, int verticeInicial){
     //implementacao inicial da busca em profundidade (DFS)

@@ -26,9 +26,16 @@ struct _grafo {
 
 Grafo* inicializaGrafo();
 
+// cria um vertice na ultima posição da lista de vertices do grafo
+// adiciona seus vizinhos (suas arestas)
+// no campo de cada vizinho adiciona o novo vértice como vizinho (aresta)
 int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam);
 
+// imprime cada vertice e cada aresta de cada vértice
 void imprimirGrafo(Grafo* grafo);
+
+// TODO
+void deletaGrafo(Grafo* grafo);
 
 void dfs(Grafo* grafo, int verticeInicial);
 
