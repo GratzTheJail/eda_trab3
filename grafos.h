@@ -1,6 +1,6 @@
 /*
 Guilherme Melo Gratz - 2211068 - 3WA
-Vinicius Lucena - ... - 3WA
+Vinicius Lucena - 2210458 - 3WA
 
 MODULO GRAFOS
 */
@@ -29,3 +29,7 @@ Grafo* inicializaGrafo();
 int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam);
 
 void imprimirGrafo(Grafo* grafo);
+
+void dfs(Grafo* grafo, int verticeInicial);
+
+void bfs(Grafo* grafo, int verticeInicial);
