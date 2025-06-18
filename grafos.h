@@ -54,6 +54,8 @@ void deletaGrafo(Grafo* grafo);
 
 void dfs(Grafo* grafo, int verticeInicial);
 
+void dfsRecursiva(Grafo* grafo, int v, int visitados[]);
+
 void bfs(Grafo* grafo, int verticeInicial);
 
 UnionFind* criarUnionFind(int n);

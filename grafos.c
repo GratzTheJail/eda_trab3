@@ -99,7 +99,7 @@ void imprimirGrafo(Grafo* grafo) {
 }
 
 // TODO
-void deletaGrafo(Grafo* grafo);
+//void deletaGrafo(Grafo* grafo);
 
 void dfs(Grafo* grafo, int verticeInicial){
     //implementacao inicial da busca em profundidade (DFS)
@@ -271,7 +271,7 @@ int compararArestas(void* a, void* b){
 
 void kruskal(Grafo* grafo){
     int qtdArestas;
-    Aresta* arestas = extrairTodasArestas(grafo, &qtdArestas);
+    Aresta* arestas = extrairArestas(grafo, &qtdArestas);
 
     // ordena as arestas pelo peso
     qsort(arestas, qtdArestas, sizeof(Aresta), compararArestas);
