@@ -66,6 +66,6 @@ void unite(UnionFind* uf, int x, int y);
 
 Aresta* extrairArestas(Grafo* grafo, int* qtdArestas);
 
-int compararArestas(void* a, void* b);
+int compararArestas(const void* a, const void* b);
 
 void kruskal(Grafo* grafo);

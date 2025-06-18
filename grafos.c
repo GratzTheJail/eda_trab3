@@ -259,7 +259,7 @@ Aresta* extrairArestas(Grafo* grafo, int* qtdArestas){
     return arestas; //retorna o array de arestas
 }
 
-int compararArestas(void* a, void* b){
+int compararArestas(const void* a, const void* b){
     Aresta* arestaA = (Aresta*)a;
     Aresta* arestaB = (Aresta*)b;
     if (arestaA->peso < arestaB->peso)
