@@ -359,7 +359,7 @@ void Union(int x, int y, int pai[], int altura[]) {
 
 // adiciona uma aresta entre 2 vértices diferentes em um grafo
 void conectaVertices(Grafo* floresta, int v1, int v2, float peso) {
-    floresta->na += 2; 
+    floresta->na += 1; 
 
 
     // insere v1 no final da lista de arestas de v2
