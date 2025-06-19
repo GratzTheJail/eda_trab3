@@ -332,7 +332,7 @@ int cmpPeso(const void* a, const void* b){
 }
 
 // busca a raiz da árvore que contém o elemento
-static int find(int x, int pai[]) {
+int find(int x, int pai[]) {
     // caso base (encontrado a raíz)
     if (pai[x] == -1) {
         return x;
@@ -343,7 +343,7 @@ static int find(int x, int pai[]) {
 }
 
 // une dois grupos, fazendo com que a raiz de um grupo aponte para
-static void Union(int x, int y, int pai[], int altura[]) {
+void Union(int x, int y, int pai[], int altura[]) {
     int raizX = find(x, pai);
     int raizY = find(y, pai);
     // caso sejam o mesmo conjunto não há nada a fazer
