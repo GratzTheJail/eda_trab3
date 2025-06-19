@@ -133,6 +133,7 @@ void deletaGrafo(Grafo* grafo){
     // deleta lista de arestas de cada vertice
     for(Node* p = grafo->viz; p != NULL; p = p->next){
         deleteList((Node *)p->obj);
+        p->obj = NULL;
     }
     // deleta lista de vertices e o proprio cabeçalho do grafo
     deleteList(grafo->viz);
@@ -282,7 +283,6 @@ void bfs(Grafo* grafo, int verticeInicial) {
             if(!visitados[vDestino]) {
                 visitados[vDestino] = 1;
                 fila_insere(fila, &inicio, &fim, vDestino);
-                printf("Enfileirando vértice %d\n", vDestino);  // Debug
             }
         }
     }
