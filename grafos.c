@@ -286,10 +286,6 @@ void bfs(Grafo* grafo, int verticeInicial) {
             }
         }
     }
-    printf("\nStatus de visita:\n");
-    for(int i = 1; i <= n; i++) {
-        printf("Vértice %d: %s\n", i, visitados[i] ? "Visitado" : "Não visitado");
-    }
     
     // 3. Liberar memória alocada
     free(visitados);
