@@ -77,8 +77,6 @@ Node *deleteList(Node *top) {
 			free(top->obj);
 		free(top);					/* delete the node */
 	}
-	else
-		return NULL;
 	return NULL;
 }
 

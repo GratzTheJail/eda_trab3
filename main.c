@@ -81,6 +81,9 @@ int main() {
     if(arvore != NULL)
         printGrafo(arvore);
 
+    deletaGrafo(grafo);
+    deletaGrafo(arvore);
+
     return 0;
 }
 /*

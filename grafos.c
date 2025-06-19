@@ -113,8 +113,16 @@ void printGrafo(Grafo* grafo) {
     }
 }
 
-// TODO
-//void deletaGrafo(Grafo* grafo);
+// libera memoria do grafo
+void deletaGrafo(Grafo* grafo){
+    // deleta lista de arestas de cada vertice
+    for(Node* p = grafo->viz; p != NULL; p = p->next){
+        deleteList((Node *)p->obj);
+    }
+    // deleta lista de vertices e o proprio cabeçalho do grafo
+    deleteList(grafo->viz);
+    free(grafo);
+}
 
 // Faz busca em profundida no grafo a partir do vértice inicial desejado
 void dfs(Grafo* grafo, int verticeInicial){
