@@ -342,7 +342,7 @@ int find(int x, int pai[]) {
     return pai[x];
 }
 
-// une dois grupos, fazendo com que a raiz de um grupo aponte para
+// une dois conjuntos, fazendo com que a raiz de um aponte para a raiz do outro
 void Union(int x, int y, int pai[], int altura[]) {
     int raizX = find(x, pai);
     int raizY = find(y, pai);
@@ -365,7 +365,7 @@ void Union(int x, int y, int pai[], int altura[]) {
     }
 }
 
-// adicionar uma aresta entre 2 vértices diferentes na floresta de subgrafos
+// adiciona uma aresta entre 2 vértices diferentes em um grafo
 void conectaVertices(Grafo* floresta, int v1, int v2, float peso) {
     floresta->na += 2; 
 
