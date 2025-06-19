@@ -113,16 +113,8 @@ void printGrafo(Grafo* grafo) {
     }
 }
 
-// libera memoria do grafo
-void deletaGrafo(Grafo* grafo){
-    // deleta lista de arestas de cada vertice
-    for(Node* p = grafo->viz; p != NULL; p = p->next){
-        deleteList((Node *)p->obj);
-    }
-    // deleta lista de vertices e o proprio cabeçalho do grafo
-    deleteList(grafo->viz);
-    free(grafo);
-}
+// TODO
+//void deletaGrafo(Grafo* grafo);
 
 // Faz busca em profundida no grafo a partir do vértice inicial desejado
 void dfs(Grafo* grafo, int verticeInicial){
@@ -139,35 +131,62 @@ void dfs(Grafo* grafo, int verticeInicial){
     // busca de fato é feita de forma recursiva
     dfsRecursiva(grafo, verticeInicial, visitados);
 }
-
-void dfsRecursiva(Grafo* grafo, int v, int visitados[]){
+void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
     if(grafo == NULL || grafo->viz == NULL)
         return;
     
-    // marca o vertice como visitado
-    visitados[v] = 1; 
-    printf("Vertice visitado: %d\n", v);
+    // 1. Verificação de limites do vértice
+    int n = grafo->nv;
+    if (v < 1 || v > n) {
+        printf("Erro: vértice %d fora do intervalo 1-%d\n", v, n);
+        return;
+    }
 
-    // encontra o vertice e pega sua lista de vizinhos
-    
+    // 2. Marca o vértice como visitado
+    visitados[v] = 1; 
+    printf("Visitando vértice: %d\n", v);
+
+    // 3. Obtém o nó do vértice
     Node* nodeVertice = findNode(grafo->viz, v); 
     
-    // caso vertice nao tem vizinhos, a busca acaba
-    if (nodeVertice == NULL || nodeVertice->obj == NULL)
+    // 4. Verifica se o vértice existe
+    if (nodeVertice == NULL) {
+        printf("Erro: vértice %d não encontrado\n", v);
         return;
+    }
     
-    // percorre a lista de arestas
-    for(Node* listaVizinhos = (Node*)nodeVertice->obj; 
-        listaVizinhos != NULL; listaVizinhos = listaVizinhos->next){
+    // 5. Verifica se o vértice tem vizinhos
+    if (nodeVertice->obj == NULL) {
+        printf("Vértice %d sem vizinhos\n", v);
+        return;
+    }
+    
+    // 6. Percorre todos os vizinhos
+    Node* listaVizinhos = (Node*)nodeVertice->obj;
+    while (listaVizinhos != NULL) {
+        if (listaVizinhos->obj == NULL) {
+            listaVizinhos = listaVizinhos->next;
+            continue;
+        }
         
         Viz* vizinho = (Viz*)listaVizinhos->obj;
-        // caso o vizinho nao tenha sido visitado ainda, continua a procura a partir dele
-        if (!visitados[vizinho->n]){
-            dfsRecursiva(grafo, vizinho->n, visitados);
+        int vDestino = vizinho->n;
+        
+        // 7. Verifica se o destino é válido
+        if (vDestino < 1 || vDestino > n) {
+            printf("Erro: vértice destino %d inválido\n", vDestino);
+            listaVizinhos = listaVizinhos->next;
+            continue;
         }
+        
+        // 8. Visita recursivamente se não foi visitado
+        if (!visitados[vDestino]) {
+            dfsRecursiva(grafo, vDestino, visitados);
+        }
+        
+        listaVizinhos = listaVizinhos->next;
     }
 }
-
 
 // funcao auxiliar de inserir na fila (sem struct auxiliar para a fila)
 void fila_insere(int fila[], int* inicio, int* fim, int valor) {
@@ -180,50 +199,77 @@ int fila_retira(int fila[], int* inicio){
 }
 
 // realiza busca em amplitude
-void bfs(Grafo* grafo, int verticeInicial){
+void bfs(Grafo* grafo, int verticeInicial) {
     if(grafo == NULL || grafo->viz == NULL)
         return;
 
-    // vetor que marca o vértices visitados
-    int visitados[MAX_VERTICES] = {0};
-    // fila para vértices a serem visitados
-    int fila[MAX_FILA];
+    // 1. Determinar o número de vértices dinamicamente
+    int n = grafo->nv;
+    
+    // 2. Alocar memória para estruturas de controle
+    int* visitados = (int*)calloc(n + 1, sizeof(int));  // Índices 1 a n
+    int* fila = (int*)malloc((n + 1) * sizeof(int));    // Fila com n+1 posições
     int inicio = 0, fim = 0;
 
-    // adiciona vertice inicial na fila 
+    // Verificar se o vértice inicial é válido
+    if (verticeInicial < 1 || verticeInicial > n) {
+        printf("Erro: Vértice inicial %d fora do intervalo 1-%d\n", verticeInicial, n);
+        free(visitados);
+        free(fila);
+        return;
+    }
+
+    // Inicialização
     visitados[verticeInicial] = 1;
     fila_insere(fila, &inicio, &fim, verticeInicial);
 
-    while (inicio < fim)
-    {
+    while (inicio < fim) {
         int v = fila_retira(fila, &inicio);
-        printf("visitando vertice %d\n", v);
-        for(int i = inicio; i < fim; i++){
-            printf("%d\n", fila[i]);
-        }
+        printf("Visitando vértice %d\n", v);
         
-         // acessa vertice
         Node* nodeVertice = findNode(grafo->viz, v);
         
-        // caso vertice nao tenha arestas, programa acaba
-        if (nodeVertice == NULL || nodeVertice->obj == NULL)
-            printf("vertice %d sem vizinhos", v);
+        if (nodeVertice == NULL) {
+            printf("Erro: vértice %d não encontrado\n", v);
+            continue;
+        }
+        
+        if (nodeVertice->obj == NULL) {
+            printf("Vértice %d sem vizinhos\n", v);
+            continue;
+        }
     
-        // percorre vizinhos
-        for(Node* listaVizinhos = (Node*)nodeVertice->obj; listaVizinhos != NULL; 
-                listaVizinhos = listaVizinhos->next){
+        // Percorre vizinhos
+        for(Node* listaVizinhos = (Node*)nodeVertice->obj; 
+            listaVizinhos != NULL; 
+            listaVizinhos = listaVizinhos->next) {
             
             Viz* vizinho = (Viz*)listaVizinhos->obj;
+            if (vizinho == NULL) continue;
+            
             int vDestino = vizinho->n;
             
-            // caso não tenha sido visitado ainda
+            // Verifica se o destino é válido
+            if (vDestino < 1 || vDestino > n) {
+                printf("Erro: vértice destino %d inválido\n", vDestino);
+                continue;
+            }
+            
             if(!visitados[vDestino]) {
-                // marca como visitado e o adiciona na fila
                 visitados[vDestino] = 1;
                 fila_insere(fila, &inicio, &fim, vDestino);
+                printf("Enfileirando vértice %d\n", vDestino);  // Debug
             }
         }
     }
+    printf("\nStatus de visita:\n");
+    for(int i = 1; i <= n; i++) {
+        printf("Vértice %d: %s\n", i, visitados[i] ? "Visitado" : "Não visitado");
+    }
+    
+    // 3. Liberar memória alocada
+    free(visitados);
+    free(fila);
 }
 
 void addArestas(Grafo* g, Arst* arestas, int tam){
@@ -322,7 +368,7 @@ void conectaVertices(Grafo* floresta, int v1, int v2, float peso) {
     Node* vert2 = findNode(floresta->viz, v2);
     if(vert2 == NULL) exit(1);
     vert2->obj = postInsert(vert2->obj, v1);
-
+        
     
     // cria de fato uma aresta nesta posição
     novoViz = findNode(vert2->obj, v1);
