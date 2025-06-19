@@ -14,6 +14,21 @@ MODULO GRAFOS
 #endif
 #include <stdlib.h>
 
+// tipo estruturado de vertice do grafo
+typedef struct _viz Viz;
+struct _viz {
+    int n;
+    float peso;
+    // Node* prox;
+};
+
+// tipo auxiliar que representa uma aresta para o algoritmo de kruskal
+typedef struct aresta Arst;
+struct aresta{
+    int v1, v2;
+    float peso;
+};
+
 Grafo* inicializaGrafo(){
     Grafo* grafo = (Grafo*)malloc(sizeof(Grafo));
     if(grafo == NULL)
@@ -113,24 +128,17 @@ void printGrafo(Grafo* grafo) {
     }
 }
 
-// TODO
-//void deletaGrafo(Grafo* grafo);
-
-// Faz busca em profundida no grafo a partir do vértice inicial desejado
-void dfs(Grafo* grafo, int verticeInicial){
-    if(grafo == NULL || grafo->viz == NULL)
-        return;
-
-    // checa que o vertice inicial existe
-    if (findNode(grafo->viz, verticeInicial) == NULL) {
-        printf("Vertice %d nao existe no grafo.\n", verticeInicial);
-        return; 
+// libera memoria do grafo
+void deletaGrafo(Grafo* grafo){
+    // deleta lista de arestas de cada vertice
+    for(Node* p = grafo->viz; p != NULL; p = p->next){
+        deleteList((Node *)p->obj);
     }
-
-    int visitados[MAX_VERTICES] = {0};
-    // busca de fato é feita de forma recursiva
-    dfsRecursiva(grafo, verticeInicial, visitados);
+    // deleta lista de vertices e o proprio cabeçalho do grafo
+    deleteList(grafo->viz);
+    free(grafo);
 }
+
 void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
     if(grafo == NULL || grafo->viz == NULL)
         return;
@@ -186,6 +194,22 @@ void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
         
         listaVizinhos = listaVizinhos->next;
     }
+}
+
+// Faz busca em profundida no grafo a partir do vértice inicial desejado
+void dfs(Grafo* grafo, int verticeInicial){
+    if(grafo == NULL || grafo->viz == NULL)
+        return;
+
+    // checa que o vertice inicial existe
+    if (findNode(grafo->viz, verticeInicial) == NULL) {
+        printf("Vertice %d nao existe no grafo.\n", verticeInicial);
+        return; 
+    }
+
+    int visitados[MAX_VERTICES] = {0};
+    // busca de fato é feita de forma recursiva
+    dfsRecursiva(grafo, verticeInicial, visitados);
 }
 
 // funcao auxiliar de inserir na fila (sem struct auxiliar para a fila)
