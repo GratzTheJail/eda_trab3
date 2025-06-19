@@ -190,6 +190,9 @@ void bfs(Grafo* grafo, int verticeInicial){
     {
         int v = fila_retira(fila, &inicio);
         printf("visitando vertice %d\n", v);
+        for(int i = inicio; i < fim; i++){
+            printf("%d\n", fila[i]);
+        }
         
          // acessa vertice
         Node* nodeVertice = findNode(grafo->viz, v);
@@ -311,7 +314,7 @@ void conectaVertices(Grafo* floresta, int v1, int v2, float peso) {
     Node* vert2 = findNode(floresta->viz, v2);
     if(vert2 == NULL) exit(1);
     vert2->obj = postInsert(vert2->obj, v1);
-        
+
     
     // cria de fato uma aresta nesta posição
     novoViz = findNode(vert2->obj, v1);
