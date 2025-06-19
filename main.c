@@ -59,10 +59,9 @@ int main() {
     vizinhos[2] = 8; peso[2] = 7.0f;
     criaVertice(grafo, vizinhos, peso, 3);      
     
-    
     // Imprime o grafo
     printf("== GRAFO CRIADO ==\n");
-    imprimirGrafo(grafo);
+    printGrafo(grafo);
     printf("\nVertices: %d | Arestas: %d\n\n", grafo->nv, grafo->na);
 
     // Testa DFS a partir do vértice 1
@@ -72,12 +71,15 @@ int main() {
     printf("\n");
 
     // Testa BFS a partir do vértice 1
-    printf("\n== BUSCA EM LARGURA (BFS) ==\n");
+    printf("\n== BUSCA EM AMPLITUDE (BFS) ==\n");
     printf("BFS iniciado a partir do vertice %d:\n", 1);
     bfs(grafo, 1);
     printf("\n");
 
-    kruskal(grafo);
+    printf("\n== CRIAÇÃO DA ÁRVORE GERADORA MÍNIMA USANDO KRUSKAL==\n");
+    Grafo* arvore = kruskal(grafo);
+    if(arvore != NULL)
+        printGrafo(arvore);
 
     return 0;
 }

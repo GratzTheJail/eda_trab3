@@ -58,6 +58,8 @@ Node *deleteNode(Node *top, int k) {
 	Node *tmp;					/* temporary node */
 	if (top != NULL) {
 		if (top -> n == k) {	/* if the element was found, it is deleted */
+			if(top->obj != NULL)
+				free(top->obj);
 			tmp = top -> next;	/* set the temporary node to the next element (in order not to "lose" the list) */
 			free(top);			/* frees the physical memory associated with the node to be deleted */
 			top = tmp;			/* set the pointer to the next node */
@@ -71,6 +73,8 @@ Node *deleteNode(Node *top, int k) {
 Node *deleteList(Node *top) {
 	if (top != NULL) {				/* if not reached end of the list... */
 		deleteList(top -> next);	/* ...move on */
+		if(top->obj != NULL)
+			free(top->obj);
 		free(top);					/* delete the node */
 	}
 	else

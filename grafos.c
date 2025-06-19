@@ -7,6 +7,8 @@ MODULO GRAFOS
 #ifndef GRAFOS
 #define GRAFOS
 #include "grafos.h"
+#include <float.h>
+#include <stdio.h>
 #define MAX_VERTICES 9
 #define MAX_FILA 9
 #endif
@@ -32,6 +34,9 @@ Grafo* inicializaGrafo(){
 // primeiro vértice tem n = 1, segundo tem n = 2, etc. Não existe vértice com n = 0.
 // NÃO CRIAR vértice com "arestas futuras"
 int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
+    if(grafo == NULL)
+        return 0;
+
     // aumenta o contador de vértices
     grafo->nv++;
     // insere novo vertice e o inicializa
@@ -87,7 +92,10 @@ int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
 }
 
 // imprime cada vértice e seus vizinhos (com pesos)
-void imprimirGrafo(Grafo* grafo) {
+void printGrafo(Grafo* grafo) {
+    if(grafo == NULL || grafo->viz == NULL)
+        return;
+    
     // percorre lista de vertices do grafo
     for(Node* v = grafo->viz; v != NULL; v = v->next) {
         printf("Vértice %d:", v->n);
@@ -110,6 +118,9 @@ void imprimirGrafo(Grafo* grafo) {
 
 // Faz busca em profundida no grafo a partir do vértice inicial desejado
 void dfs(Grafo* grafo, int verticeInicial){
+    if(grafo == NULL || grafo->viz == NULL)
+        return;
+
     // checa que o vertice inicial existe
     if (findNode(grafo->viz, verticeInicial) == NULL) {
         printf("Vertice %d nao existe no grafo.\n", verticeInicial);
@@ -122,6 +133,9 @@ void dfs(Grafo* grafo, int verticeInicial){
 }
 
 void dfsRecursiva(Grafo* grafo, int v, int visitados[]){
+    if(grafo == NULL || grafo->viz == NULL)
+        return;
+    
     // marca o vertice como visitado
     visitados[v] = 1; 
     printf("Vertice visitado: %d\n", v);
@@ -159,6 +173,9 @@ int fila_retira(int fila[], int* inicio){
 
 // realiza busca em amplitude
 void bfs(Grafo* grafo, int verticeInicial){
+    if(grafo == NULL || grafo->viz == NULL)
+        return;
+
     // vetor que marca o vértices visitados
     int visitados[MAX_VERTICES] = {0};
     // fila para vértices a serem visitados
@@ -198,128 +215,156 @@ void bfs(Grafo* grafo, int verticeInicial){
     }
 }
 
-// cria um Union-Find com n elementos
-UnionFind* criarUnionFind(int n){ 
-    UnionFind* uf = (UnionFind*)malloc(sizeof(UnionFind));
-    if(uf == NULL) exit(1);
-    uf->tam = n;
-    // aloca espaço para os arrays pai e rank
-    uf->pai = (int*)malloc(n * sizeof(int));
-    uf->rank = (int*)malloc(n * sizeof(int));
-    if(uf->pai == NULL || uf->rank == NULL) exit(1);
+void addArestas(Grafo* g, Arst* arestas, int tam){
+    if(g == NULL || g->viz == NULL)
+        return;
+
+    int i = 0;
     
-    for (int i = 1; i <= n; i++)
-    {
-        uf->pai[i] = i; //cada vertice é seu próprio pai inicialmente
-        uf->rank[i] = 0; //rank inicial é 0
-    }
-    return uf; //retorna o UnionFind criado
-}
+    // percorre lista de vertices
+    for(Node* v = g->viz; v != NULL; v = v->next){
+        
+        // percorre lista de arestas
+        for(Node* viz = (Node*)v->obj; viz != NULL; viz = viz->next){
+            Viz* vizinho = (Viz*)viz->obj;
 
-//encontra o pai do vertice x
-int find(UnionFind* uf, int x) { 
-    if (uf->pai[x] != x)
-    {
-        uf->pai[x] = find(uf, uf->pai[x]); //caminho comprimido
-    }
-    return uf->pai[x]; //retorna o pai do vertice x
-}
-
-//une dois conjuntos
-void unite(UnionFind* uf, int x, int y){
-    int rx = find(uf, x); //encontra o pai do vertice x
-    int ry = find(uf, y); //encontra o pai do vertice y
-
-    if (rx == ry) return; //se os pais forem iguais, ja estao unidos
-    
-    if (uf->rank[rx] > uf->rank[ry])
-    {
-        uf->pai[ry] = rx; //une o conjunto de y ao conjunto de x
-    }
-    else
-    {
-        uf->pai[rx] = ry; //une o conjunto de x ao conjunto de y
-        if (uf->rank[rx] == uf->rank[ry])
-        {
-            uf->rank[ry]++; //incrementa o rank se os ranks forem iguais
-        }
-    }
-}
-
-//por ser um grafo nao direcionado, precisa remover duplicatas
-Aresta* extrairArestas(Grafo* grafo, int* qtdArestas){
-    Node* vertice = grafo->viz;
-    int maxArestas = grafo->na;
-
-    Aresta* arestas = (Aresta*)malloc(maxArestas * sizeof(Aresta));
-    *qtdArestas = 0;
-
-    while (vertice != NULL)
-    {
-        int u = vertice->n;
-        Node* listaVizinhos = (Node*)vertice->obj;
-
-        while (listaVizinhos != NULL)
-        {
-            Viz* vizinho = (Viz*)listaVizinhos->obj;
-            int v = vizinho->n;
-            float peso = vizinho->peso;
-
-            // evita adicionar arestas iguais na lista de arestas
-            if (u < v)
-            {
-                arestas[*qtdArestas].u = u;
-                arestas[*qtdArestas].v = v;
-                arestas[*qtdArestas].peso = peso;
-                (*qtdArestas)++;
+            // para não adicionar 2 vezes a mesma aresta compara a ordem
+            if (vizinho != NULL && v->n < vizinho->n && i < tam) {
+                arestas[i].v1 = v->n;
+                arestas[i].v2 = vizinho->n;
+                arestas[i].peso = vizinho->peso;
+                i++;
             }
-            listaVizinhos = listaVizinhos->next; // passa para o proximo vizinho
         }
-        vertice = vertice->next; // passa para o proximo vertice
     }
+
+    return;
+}
+
+// função que será usada por qsort
+int cmpPeso(const void* a, const void* b){
+    Arst* ar_a = (Arst*)a;
+    Arst* ar_b = (Arst*)b;
+    if (ar_a->peso < ar_b->peso) return -1;
+    if (ar_a->peso > ar_b->peso) return 1;
+    return 0;
+}
+
+// busca a raiz da árvore que contém o elemento
+static int find(int x, int pai[]) {
+    // caso base (encontrado a raíz)
+    if (pai[x] == -1) {
+        return x;
+    }
+
+    pai[x] = find(pai[x], pai);
+    return pai[x];
+}
+
+// une dois grupos, fazendo com que a raiz de um grupo aponte para
+static void Union(int x, int y, int pai[], int altura[]) {
+    int raizX = find(x, pai);
+    int raizY = find(y, pai);
+    // caso sejam o mesmo conjunto não há nada a fazer
+    if (raizX == raizY) return; 
+
+    // caso a altura de um conjunto seja menor que de outro, apenas tornar a raíz de um
+    // conjunto o pai da raíz do outro
+    if (altura[raizX] < altura[raizY]) {
+        pai[raizX] = raizY;
+    } else if (altura[raizX] > altura[raizY]) {
+        pai[raizY] = raizX;
+    } 
     
-    return arestas; //retorna o array de arestas
+    // caso a altura seja igual, escolhemos uma raíz que será pai da outra arbitráriamente
+    // neste caso a altura aumenta em 1
+    else {
+        pai[raizY] = raizX;
+        altura[raizX]++;
+    }
 }
 
-int compararArestas(const void* a, const void* b){
-    Aresta* arestaA = (Aresta*)a;
-    Aresta* arestaB = (Aresta*)b;
-    if (arestaA->peso < arestaB->peso)
-        return -1;
-    if (arestaA->peso > arestaB->peso)
-        return 1;
-    return 0; // se os pesos forem iguais, retorna 0
+// adicionar uma aresta entre 2 vértices diferentes na floresta de subgrafos
+void conectaVertices(Grafo* floresta, int v1, int v2, float peso) {
+    floresta->na += 2; 
+
+
+    // insere v1 no final da lista de arestas de v2
+    Node* vert1 = findNode((Node*)floresta->viz, v1);
+    if(vert1 == NULL) exit(1);
+    vert1->obj = postInsert(vert1->obj, v2);
+    
+
+    // cria de fato uma aresta nesta posição
+    Node* novoViz = findNode(vert1->obj, v2);
+    
+    Viz* vizV2 = (Viz*)malloc(sizeof(Viz));
+    if(vizV2 == NULL) exit(1);
+    
+    vizV2->n = v2;
+    vizV2->peso = peso;
+    novoViz->obj = (void*)vizV2;
+
+
+
+    // insere v1 no final da lista de arestas de v2
+    Node* vert2 = findNode(floresta->viz, v2);
+    if(vert2 == NULL) exit(1);
+    vert2->obj = postInsert(vert2->obj, v1);
+        
+    
+    // cria de fato uma aresta nesta posição
+    novoViz = findNode(vert2->obj, v1);
+    
+    Viz* vizV1 = (Viz*)malloc(sizeof(Viz));
+    if(vizV1 == NULL) exit(1); 
+    
+    vizV1->n = v1;
+    vizV1->peso = peso;
+    novoViz->obj = vizV1;
+
+    return;
 }
 
-void kruskal(Grafo* grafo){
-    int qtdArestas;
-    Aresta* arestas = extrairArestas(grafo, &qtdArestas);
+// Retorna um subgrafo do grafo g que contém a árvore geradora de custo mínimo
+Grafo* kruskal(Grafo* g){
+    if(g == NULL || g->viz == NULL)
+        return NULL;
 
-    // ordena as arestas pelo peso
-    qsort(arestas, qtdArestas, sizeof(Aresta), compararArestas);
+    // Inicializa floresta (vértices sem as arestas)
+    Grafo* floresta = inicializaGrafo();
+    for (int i = 0; i < g->nv; i++) {
+        criaVertice(floresta, NULL, NULL, 0);
+    }
 
-    UnionFind* uf = criarUnionFind(grafo->nv); //numero total de vertices
+    // caso não haja arestas, não há arvore geradora maxima
+    if(g->na == 0)
+        return floresta;
 
-    printf("Arestas do MST:\n");
-    float custoTotal = 0;
+    Arst* arestas = (Arst*)malloc(sizeof(Arst)*g->na);
+    if(arestas == NULL) exit(1);
+    addArestas(g, arestas, g->na);
+    
+    // ordena as arestas
+    qsort(arestas, g->na, sizeof(*arestas), cmpPeso);
 
-    for (int i = 0; i < qtdArestas && grafo->na < grafo->nv - 1; i++)
-    {
-        Aresta a = arestas[i];
-        int u = a.u;
-        int v = a.v;
-        float peso = a.peso;
+    // represetação dos conjuntos por vetores
+    int pai[MAX_VERTICES];
+    for (int i = 0; i < g->nv; i++) 
+        pai[i] = -1;
 
-        if (find(uf, u) != find(uf, v))
-        {
-            printf("Aresta: %d - %d, Peso: %.2f\n", u, v, peso);
-            custoTotal += peso;
-            unite(uf, u, v);
+    int altura[MAX_VERTICES];
+    for(int i = 0; i < g->nv; i++)
+        altura[i] = 0;
+
+    // Construir floresta
+    for (int i = 0; i < g->na; i++) {
+        if (find(arestas[i].v1 - 1, pai) != find(arestas[i].v2 - 1, pai)) {
+            conectaVertices(floresta, arestas[i].v1, arestas[i].v2, arestas[i].peso);
+            Union(arestas[i].v1 - 1, arestas[i].v2 - 1, pai, altura);
         }
     }
-    printf("Custo total da AGM: %.2f\n", custoTotal);
-    free(arestas); // libera a memoria alocada para as arestas
-    free(uf->pai); // libera a memoria alocada para o array pai
-    free(uf->rank); // libera a memoria alocada para o array rank
-    free(uf); // libera a memoria alocada para o UnionFind
+
+    free(arestas);
+    return floresta;
 }
