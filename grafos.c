@@ -331,7 +331,7 @@ int cmpPeso(const void* a, const void* b){
     return 0;
 }
 
-// busca a raiz da árvore que contém o elemento
+// busca a raiz da do conjunto que contém o elemento x
 int find(int x, int pai[]) {
     // caso base (encontrado a raíz)
     if (pai[x] == -1) {
