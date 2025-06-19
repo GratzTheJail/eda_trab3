@@ -30,6 +30,7 @@ Grafo* inicializaGrafo(){
 // nao pode ter deleção ou modificação
 // cada posição no vetor grafo->viz corresponde a um vertice QUE EXISTE
 // primeiro vértice tem n = 1, segundo tem n = 2, etc. Não existe vértice com n = 0.
+// NÃO CRIAR vértice com "arestas futuras"
 int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
     // aumenta o contador de vértices
     grafo->nv++;
@@ -71,8 +72,14 @@ int criaVertice(Grafo* grafo, int vizinhos[], float peso[], int tam){
 
             // insere no na lista de arestas do vizinho
             novoViz = findNode(grafo->viz, vizinhos[i]);
-            novoViz->obj = (void*)postInsert(novoViz->obj, countNodes(novoViz->obj));
-            findNode(novoViz->obj, countNodes(novoViz->obj) - 1)->obj = (void*)atual; // faz nova aresta apontar para o vertice criado
+            if(novoViz != NULL){
+                // checa que essa aresta não foi adicionada ainda
+                if(findNode(novoViz->obj, atual->n) == NULL){
+                    // insere e faz nova aresta apontar para o vertice criado
+                    novoViz->obj = (void*)postInsert(novoViz->obj, atual->n);
+                    findNode(novoViz->obj, atual->n)->obj = (void*)atual; 
+                }
+            }
         }
     }
 
@@ -101,77 +108,92 @@ void imprimirGrafo(Grafo* grafo) {
 // TODO
 //void deletaGrafo(Grafo* grafo);
 
+// Faz busca em profundida no grafo a partir do vértice inicial desejado
 void dfs(Grafo* grafo, int verticeInicial){
-    //implementacao inicial da busca em profundidade (DFS)
+    // checa que o vertice inicial existe
     if (findNode(grafo->viz, verticeInicial) == NULL) {
         printf("Vertice %d nao existe no grafo.\n", verticeInicial);
-        return; // se o vertice inicial nao existe, nao faz nada
+        return; 
     }
-    int visitados[MAX_VERTICES] = {0}; // vetor para marcar os vértices visitados
-    printf("DFS a partir do vertice %d:\n", verticeInicial);
-    dfsRecursiva(grafo, verticeInicial, visitados); //inicio da busca
+
+    int visitados[MAX_VERTICES] = {0};
+    // busca de fato é feita de forma recursiva
+    dfsRecursiva(grafo, verticeInicial, visitados);
 }
 
 void dfsRecursiva(Grafo* grafo, int v, int visitados[]){
-    visitados[v] = 1; // marca o vertice como visitado
-    printf("visitando o vertice %d\n", v); // imprime o vertice visitado
+    // marca o vertice como visitado
+    visitados[v] = 1; 
+    printf("Vertice visitado: %d\n", v);
 
-    Node* nodeVertice = findNode(grafo->viz, v); // encontra o vertice e pega sua lista de vizinhos
-    if (nodeVertice == NULL || nodeVertice->obj == NULL)
-        return; // se o vertice nao tem vizinhos, acaba
+    // encontra o vertice e pega sua lista de vizinhos
     
-    Node* listaVizinhos = (Node*)nodeVertice->obj; // pega a lista de vizinhos do vertice
-    while (listaVizinhos != NULL)
-    {
-        Viz* vizinho = (Viz*)listaVizinhos->obj; // pega o vizinho atual
-        if (!visitados[vizinho->n]) // se o vizinho nao foi visitado
-        {
-            dfsRecursiva(grafo, vizinho->n, visitados); // chama a funcao recursiva para visitar o vizinho
-        }        
-        listaVizinhos = listaVizinhos->next;
+    Node* nodeVertice = findNode(grafo->viz, v); 
+    
+    // caso vertice nao tem vizinhos, a busca acaba
+    if (nodeVertice == NULL || nodeVertice->obj == NULL)
+        return;
+    
+    // percorre a lista de arestas
+    for(Node* listaVizinhos = (Node*)nodeVertice->obj; 
+        listaVizinhos != NULL; listaVizinhos = listaVizinhos->next){
+        
+        Viz* vizinho = (Viz*)listaVizinhos->obj;
+        // caso o vizinho nao tenha sido visitado ainda, continua a procura a partir dele
+        if (!visitados[vizinho->n]){
+            dfsRecursiva(grafo, vizinho->n, visitados);
+        }
     }
 }
-// funcao enqueue para adicionar um elemento ao final da fila
-void enqueue(int fila[], int* inicio, int* fim, int valor) {
-    fila[(*fim)++] = valor; // adiciona o valor ao final da fila
+
+
+// funcao auxiliar de inserir na fila (sem struct auxiliar para a fila)
+void fila_insere(int fila[], int* inicio, int* fim, int valor) {
+    fila[(*fim)++] = valor;
 }
 
-// funcao dequeue para remover o primeiro elemento da fila
-int dequeue(int fila[], int* inicio){ 
-    return fila[(*inicio)++]; // remove o primeiro elemento da fila e atualiza o inicio
+// funcao auxiliar de remover na fila (sem struct auxiliar para fila)
+int fila_retira(int fila[], int* inicio){ 
+    return fila[(*inicio)++];
 }
 
-// funcao bfs para realizar a busca em largura
+// realiza busca em amplitude
 void bfs(Grafo* grafo, int verticeInicial){
-    int visitados[MAX_VERTICES] = {0}; // vetor para marcar os vértices visitados
-    int fila[MAX_FILA]; // fila para armazenar os vértices a serem visitados
-    int inicio = 0, fim = 0; // variaveis para controlar o inicio e o fim da fila
+    // vetor que marca o vértices visitados
+    int visitados[MAX_VERTICES] = {0};
+    // fila para vértices a serem visitados
+    int fila[MAX_FILA];
+    int inicio = 0, fim = 0;
 
+    // adiciona vertice inicial na fila 
     visitados[verticeInicial] = 1;
-    enqueue(fila, &inicio, &fim, verticeInicial); // adiciona o vertice inicial na fila 
-
-    printf("BFS iniciado a partir do vertice %d:\n", verticeInicial);
+    fila_insere(fila, &inicio, &fim, verticeInicial);
 
     while (inicio < fim)
     {
-        int v = dequeue(fila, &inicio); // remove o primeiro elemento da fila
-        printf("visitando vertice %d\n", v); // imprime o vertice visitado
-
-        Node* nodeVertice = findNode(grafo->viz, v); // encontra o vertice e pega sua lista de vizinhos
+        int v = fila_retira(fila, &inicio);
+        printf("visitando vertice %d\n", v);
+        
+         // acessa vertice
+        Node* nodeVertice = findNode(grafo->viz, v);
+        
+        // caso vertice nao tenha arestas, programa acaba
         if (nodeVertice == NULL || nodeVertice->obj == NULL)
             printf("vertice %d sem vizinhos", v);
     
-        Node* listaVizinhos = (Node*)nodeVertice->obj; // pega a lista de vizinhos do vertice
-        while (listaVizinhos != NULL)
-        {
+        // percorre vizinhos
+        for(Node* listaVizinhos = (Node*)nodeVertice->obj; listaVizinhos != NULL; 
+                listaVizinhos = listaVizinhos->next){
+            
             Viz* vizinho = (Viz*)listaVizinhos->obj;
             int vDestino = vizinho->n;
-
+            
+            // caso não tenha sido visitado ainda
             if(!visitados[vDestino]) {
-                visitados[vDestino] = 1; // marca o vizinho como visitado
-                enqueue(fila, &inicio, &fim, vDestino); // adiciona o vizinho na fila
+                // marca como visitado e o adiciona na fila
+                visitados[vDestino] = 1;
+                fila_insere(fila, &inicio, &fim, vDestino);
             }
-            listaVizinhos = listaVizinhos->next; // passa para o proximo vizinho
         }
     }
 }
