@@ -144,33 +144,33 @@ void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
     if(grafo == NULL || grafo->viz == NULL)
         return;
     
-    // 1. Verificação de limites do vértice
+    // verifica se o vertice foi visitado ou nao
     int n = grafo->nv;
     if (v < 1 || v > n) {
         printf("Erro: vértice %d fora do intervalo 1-%d\n", v, n);
         return;
     }
 
-    // 2. Marca o vértice como visitado
+    // incluindo o vertice no array de visitados
     visitados[v] = 1; 
     printf("Visitando vértice: %d\n", v);
 
-    // 3. Obtém o nó do vértice
+    // obtem o no do vertice
     Node* nodeVertice = findNode(grafo->viz, v); 
     
-    // 4. Verifica se o vértice existe
+    // verifica se o vertice existe
     if (nodeVertice == NULL) {
         printf("Erro: vértice %d não encontrado\n", v);
         return;
     }
     
-    // 5. Verifica se o vértice tem vizinhos
+    // verifica se o vértice tem vizinhos
     if (nodeVertice->obj == NULL) {
         printf("Vértice %d sem vizinhos\n", v);
         return;
     }
     
-    // 6. Percorre todos os vizinhos
+    // percorre todos os vizinhos
     Node* listaVizinhos = (Node*)nodeVertice->obj;
     while (listaVizinhos != NULL) {
         if (listaVizinhos->obj == NULL) {
@@ -181,14 +181,14 @@ void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
         Viz* vizinho = (Viz*)listaVizinhos->obj;
         int vDestino = vizinho->n;
         
-        // 7. Verifica se o destino é válido
+        // verifica se o destino é válido
         if (vDestino < 1 || vDestino > n) {
             printf("Erro: vértice destino %d inválido\n", vDestino);
             listaVizinhos = listaVizinhos->next;
             continue;
         }
         
-        // 8. Visita recursivamente se não foi visitado
+        // visita recursivamente se não foi visitado
         if (!visitados[vDestino]) {
             dfsRecursiva(grafo, vDestino, visitados);
         }
@@ -209,16 +209,15 @@ void dfs(Grafo* grafo, int verticeInicial){
     }
 
     int visitados[MAX_VERTICES] = {0};
-    // busca de fato é feita de forma recursiva
     dfsRecursiva(grafo, verticeInicial, visitados);
 }
 
-// funcao auxiliar de inserir na fila (sem struct auxiliar para a fila)
+// funcao auxiliar de inserir na fila 
 void fila_insere(int fila[], int* inicio, int* fim, int valor) {
     fila[(*fim)++] = valor;
 }
 
-// funcao auxiliar de remover na fila (sem struct auxiliar para fila)
+// funcao auxiliar de remover da fila 
 int fila_retira(int fila[], int* inicio){ 
     return fila[(*inicio)++];
 }
@@ -228,15 +227,13 @@ void bfs(Grafo* grafo, int verticeInicial) {
     if(grafo == NULL || grafo->viz == NULL)
         return;
 
-    // 1. Determinar o número de vértices dinamicamente
     int n = grafo->nv;
     
-    // 2. Alocar memória para estruturas de controle
-    int* visitados = (int*)calloc(n + 1, sizeof(int));  // Índices 1 a n
-    int* fila = (int*)malloc((n + 1) * sizeof(int));    // Fila com n+1 posições
+    int* visitados = (int*)calloc(n + 1, sizeof(int));  // indices 1 a n
+    int* fila = (int*)malloc((n + 1) * sizeof(int));    // fila com n+1 posições
     int inicio = 0, fim = 0;
 
-    // Verificar se o vértice inicial é válido
+    // verificar se o vértice inicial é válido
     if (verticeInicial < 1 || verticeInicial > n) {
         printf("Erro: Vértice inicial %d fora do intervalo 1-%d\n", verticeInicial, n);
         free(visitados);
@@ -244,7 +241,7 @@ void bfs(Grafo* grafo, int verticeInicial) {
         return;
     }
 
-    // Inicialização
+    // inicializando fila e visitados
     visitados[verticeInicial] = 1;
     fila_insere(fila, &inicio, &fim, verticeInicial);
 
@@ -264,7 +261,7 @@ void bfs(Grafo* grafo, int verticeInicial) {
             continue;
         }
     
-        // Percorre vizinhos
+        // percorrendo vizinhos
         for(Node* listaVizinhos = (Node*)nodeVertice->obj; 
             listaVizinhos != NULL; 
             listaVizinhos = listaVizinhos->next) {
@@ -287,7 +284,6 @@ void bfs(Grafo* grafo, int verticeInicial) {
         }
     }
     
-    // 3. Liberar memória alocada
     free(visitados);
     free(fila);
 }
@@ -318,7 +314,7 @@ void addArestas(Grafo* g, Arst* arestas, int tam){
     return;
 }
 
-// função que será usada por qsort
+// funcao que será usada por qsort
 int cmpPeso(const void* a, const void* b){
     Arst* ar_a = (Arst*)a;
     Arst* ar_b = (Arst*)b;
@@ -329,7 +325,7 @@ int cmpPeso(const void* a, const void* b){
 
 // busca a raiz da do conjunto que contém o elemento x
 int find(int x, int pai[]) {
-    // caso base (encontrado a raíz)
+    // caso base (raiz encontrada)
     if (pai[x] == -1) {
         return x;
     }
