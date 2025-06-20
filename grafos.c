@@ -144,12 +144,7 @@ void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
     if(grafo == NULL || grafo->viz == NULL)
         return;
     
-    // verifica se o vertice foi visitado ou nao
     int n = grafo->nv;
-    if (v < 1 || v > n) {
-        printf("Erro: vértice %d fora do intervalo 1-%d\n", v, n);
-        return;
-    }
 
     // incluindo o vertice no array de visitados
     visitados[v] = 1; 
