@@ -166,8 +166,7 @@ void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
     }
     
     // percorre todos os vizinhos
-    Node* listaVizinhos = (Node*)nodeVertice->obj;
-    while (listaVizinhos != NULL) {
+    for(Node* listaVizinhos = (Node*)nodeVertice->obj; listaVizinhos != NULL; listaVizinhos = listaVizinhos->next){
         if (listaVizinhos->obj == NULL) {
             listaVizinhos = listaVizinhos->next;
             continue;
@@ -186,9 +185,7 @@ void dfsRecursiva(Grafo* grafo, int v, int visitados[]) {
         // visita recursivamente se não foi visitado
         if (!visitados[vDestino]) {
             dfsRecursiva(grafo, vDestino, visitados);
-        }
-        
-        listaVizinhos = listaVizinhos->next;
+        }        
     }
 }
 
