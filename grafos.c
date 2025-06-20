@@ -203,7 +203,7 @@ void dfs(Grafo* grafo, int verticeInicial){
         return; 
     }
 
-    int visitados[MAX_VERTICES] = {0};
+    int visitados[MAX_VERTICES + 1] = {0};
     dfsRecursiva(grafo, verticeInicial, visitados);
 }
 
